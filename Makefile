@@ -1,12 +1,12 @@
 
 
-make install:
+install:
 	poetry install
 
 
-make run:
+run:
 	poetry run python3 src/main.py
 
 
-make test:
+test:
 	poetry run pytest tests
