@@ -2,7 +2,7 @@
 
 * Factory is class that usually delegates creation of object *with options*
 
-* Factory is creational pattern that lets you don't depend on concrete class.
+* Factory is creational pattern that lets you don't depend on concrete class
 
 * Factory controls mutability of classes
 
