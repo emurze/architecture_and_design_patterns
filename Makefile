@@ -50,7 +50,7 @@ unittests:
 	poetry run pytest tests
 
 
-test: lint types coverage run
+test: lint types coverage unittests run
 
 # Run
 
