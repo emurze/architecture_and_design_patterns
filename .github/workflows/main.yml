@@ -3,7 +3,7 @@ name: Design Patterns CI
 on: [push]
 
 jobs:
-  lint-check-types:
+  lint_and_check-types:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Repository
@@ -31,7 +31,7 @@ jobs:
           make pip_types
 
   unit-integration-tests:
-    needs: lint-check-types
+    needs: lint_and_check-types
     runs-on: ubuntu-latest
     steps:
       - name: Set up Repository
