@@ -32,11 +32,11 @@ pip_lint:
 	flake8 --config setup.cfg tests src;
 
 
-types:
+check_types:
 	poetry run mypy tests src
 
 
-pip_types:
+pip_check_types:
 	mypy tests src
 
 
@@ -50,7 +50,7 @@ unittests:
 	poetry run pytest tests
 
 
-test: lint types unittests run
+test: lint check_types unittests run
 
 # Run
 
