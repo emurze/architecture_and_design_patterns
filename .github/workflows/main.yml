@@ -3,7 +3,7 @@ name: Design Patterns CI
 on: [push]
 
 jobs:
-  lint:
+  lint-check-types:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Repository
@@ -18,33 +18,20 @@ jobs:
         run: |
           pip install flake8
 
-      - name: Lint with flake8
-        run: |
-          make pip_lint
-
-  types:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Repository
-        uses: actions/checkout@v4
-
-      - name: Install Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      - name: Install flake8
+      - name: Install mypy
         run: |
           pip install mypy
 
       - name: Lint with flake8
         run: |
+          make pip_lint
+
+      - name: Check types with mypy
+        run: |
           make pip_types
 
   unit-integration-tests:
-    needs:
-      - lint
-      - types
+    needs: lint-check-types
     runs-on: ubuntu-latest
     steps:
       - name: Set up Repository
