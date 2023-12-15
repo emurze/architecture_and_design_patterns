@@ -1,18 +1,24 @@
-# Architecture and Design Patterns
+# Design Patterns
 
-### Requirements to learn
+### Creational Patterns
 
-* Pytest
+* Factory
 
-* Fabric UseCases
+* Abstract Factory
 
-* Abstract Fabric UseCases
+* Singleton
 
-* Facade
+* Prototype
+
+* Object - Builder - Director
 
 
 ### How to run
 
-* make install
+```
+make install
+```
 
-* make run
+```
+make run
+```
