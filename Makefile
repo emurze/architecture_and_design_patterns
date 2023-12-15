@@ -1,35 +1,44 @@
-
+# Install
 
 install:
 	poetry install --no-root
 
 	git init
 
-	touch .git/hooks/pre-commit
+	echo '''           \
+	#!/bin/sh          \
+				       \
+	make black &&      \
+	                   \
+	git add . &&       \
+	                   \
+	make test          \
+	''' > .git/hooks/pre-commit
 
 	chmod +x .git/hooks/pre-commit
 
-	echo '''        \
-	#!/bin/sh       \
-				    \
-	make black &&   \
-	                \
-	git add . &&    \
-	                \
-	make test;      \
-	''' > .git/hooks/pre-commit
 
-run:
-	poetry run python3 src/main.py
+# Lint
 
 black:
 	poetry run black .
 
 lint:
-	poetry run
+	poetry run flake8 --config setup.cfg tests src;
 
 types:
 	poetry run mypy tests src
 
-test:
-	poetry run pytest tests src
+
+# Tests
+
+unittests:
+	poetry run pytest tests
+
+test: lint types unittests run
+
+
+# Run
+
+run:
+	poetry run python3 src/main.py
