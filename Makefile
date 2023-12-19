@@ -21,7 +21,7 @@ install:
 # Lint
 
 black:
-	poetry run black .
+	poetry run black -l 79 .
 
 
 lint:
@@ -32,7 +32,7 @@ pip_lint:
 	flake8 --config setup.cfg tests src;
 
 
-check_types:
+types:
 	poetry run mypy tests src
 
 
@@ -47,10 +47,10 @@ coverage:
 
 
 unittests:
-	poetry run pytest tests
+	poetry run pytest -s tests
 
 
-test: lint check_types unittests run
+test: lint types unittests run
 
 # Run
 
