@@ -1,10 +1,14 @@
 import copy
-from dataclasses import dataclass
 from datetime import date
 
 from src.clean_architecture.model import OrderLine, Batch
 
 today = date.today
+
+
+def make_batch_and_copy(stu: str, batch_qty: int) -> tuple[Batch, Batch]:
+    batch = Batch(ref=1, purchased_quantity=batch_qty, stu=stu, eta=today())
+    return batch, copy.copy(batch)
 
 
 def make_batch_and_line(
@@ -61,8 +65,7 @@ def test_cannot_deallocate_unallocated_line() -> None:
 
 
 def test_equal() -> None:
-    batch = Batch(ref=1, purchased_quantity=12, stu="Melon", eta=today())
-    batch2 = copy.copy(batch)
+    batch, batch2 = make_batch_and_copy(stu="Melon", batch_qty=12)
     batch2.stu = "Melon2"
     assert batch == batch2
 

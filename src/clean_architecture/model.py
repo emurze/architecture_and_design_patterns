@@ -5,13 +5,14 @@ from datetime import date
 @dataclass(frozen=True)
 class OrderLine:
     """
-    Value object is object that identified by data and is immutable.
+    Value object is object that identified by data (order_id, stu, quantity),
+    haven't a long-lived identity (id, ref), and is immutable.
     Because if I change a property then I will get a new value object.
     Statement (frozen=True) means that the entire class will have __eq__ and
     __hash__ methods and will be immutable.
     """
 
-    order_id: int  # Order is another Object ( Entity because of id )
+    order_id: int  # order_id is for another Object
     stu: str
     quantity: int
 
