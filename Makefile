@@ -5,15 +5,7 @@ install:
 
 	git init
 
-	echo '''           \
-	#!/bin/sh          \
-				       \
-	make black &&      \
-	                   \
-	git add . &&       \
-	                   \
-	make test          \
-	''' > .git/hooks/pre-commit
+	cp .github/hooks/pre-commit.sh .git/hooks/pre-commit
 
 	chmod +x .git/hooks/pre-commit
 
