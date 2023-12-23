@@ -54,3 +54,6 @@ between the users and the Entities.
 
 * A use case is an object. It has one or more functions that implement the application-
 specific business rules
+
+  
+### Value Object pattern is any domain object that is uniquely identified by the data it holds; we usually make them *immutable*: 

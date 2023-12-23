@@ -2,41 +2,51 @@ from dataclasses import dataclass, field
 from datetime import date
 
 
-@dataclass(eq=True, frozen=True)
+@dataclass(frozen=True)
 class OrderLine:
     """
-    High-level module
+    Value object is object that identified by data and is immutable
     """
 
     order_id: int
-    quantity: int
     stu: str
+    quantity: int
 
 
 @dataclass
 class Batch:
-    """
-    High-level module
-    """
-
-    batch_id: int
-    quantity: int
+    ref: int
     stu: str
     eta: date
-    __is_allocated: bool = field(
-        default=False,
+    purchased_quantity: int
+    _allocations: set[OrderLine] = field(
+        default_factory=set,
         repr=False,
         init=False,
-        compare=False,
-        kw_only=False,
     )
 
-    def allocate(self, order_line: OrderLine) -> None:
-        if not self.__is_allocated:
-            remains = self.quantity - order_line.quantity
+    def allocate(self, line: OrderLine) -> None:
+        if self.can_allocate(line):
+            self._allocations.add(line)
 
-            if remains < 0:
-                return
+    def deallocate(self, line: OrderLine) -> None:
+        if self.can_deallocate(line):
+            self._allocations.remove(line)
 
-            self.quantity = remains
-            self.__is_allocated = True
+    @property
+    def allocated_quantity(self) -> int:
+        return sum(line.quantity for line in self._allocations)
+
+    @property
+    def available_quantity(self) -> int:
+        return self.purchased_quantity - self.allocated_quantity
+
+    def can_allocate(self, line: OrderLine) -> bool:
+        return (
+            self.available_quantity >= line.quantity
+            and self.stu == line.stu
+            and not self._allocations
+        )
+
+    def can_deallocate(self, line: OrderLine) -> bool:
+        return line in self._allocations
