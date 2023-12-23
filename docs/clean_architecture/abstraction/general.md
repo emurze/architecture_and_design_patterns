@@ -57,3 +57,14 @@ specific business rules
 
   
 ### Value Object pattern is any domain object that is uniquely identified by the data it holds; we usually make them *immutable*: 
+
+* An order line is uniquely identified by its order ID, SKU, and quantity; if we change one of those values, we now have a new line. 
+That’s the definition of a value object: any object that is identified only by its data and doesn’t have a long-lived identity
+
+![value_object](images/value_object.png)
+
+### Entity patterns is any domain object that is uniquely identified by the id
+
+* If we change Entity then get Entity
+
+![entity](images/entity.png)

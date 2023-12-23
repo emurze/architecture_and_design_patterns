@@ -5,16 +5,26 @@ from datetime import date
 @dataclass(frozen=True)
 class OrderLine:
     """
-    Value object is object that identified by data and is immutable
+    Value object is object that identified by data and is immutable.
+    Because if I change a property then I will get a new value object.
+    Statement (frozen=True) means that the entire class will have __eq__ and
+    __hash__ methods and will be immutable.
     """
 
-    order_id: int
+    order_id: int  # Order is another Object ( Entity because of id )
     stu: str
     quantity: int
 
 
 @dataclass
 class Batch:
+    """
+    Entity is object that has long-lived identity and is mutable.
+    If we change Entity then get the same Entity with changed properties.
+    If you want to use Entity in set or dict key then you should implement
+    __eq__ and __hash__ methods for identification attribute like ref, id, uuid
+    """
+
     ref: int
     stu: str
     eta: date
@@ -50,3 +60,12 @@ class Batch:
 
     def can_deallocate(self, line: OrderLine) -> bool:
         return line in self._allocations
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Batch):
+            return False
+        else:
+            return self.ref == other.ref
+
+    def __hash__(self) -> int:
+        return hash(self.ref)
