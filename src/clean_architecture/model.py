@@ -1,5 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import date
+from typing import NoReturn
+
+from src.clean_architecture.exceptions import OutOfStock
 
 
 @dataclass(frozen=True)
@@ -28,8 +31,8 @@ class Batch:
 
     ref: int
     stu: str
-    eta: date
     purchased_quantity: int
+    eta: date | None = None
     _allocations: set[OrderLine] = field(
         default_factory=set,
         repr=False,
@@ -68,5 +71,28 @@ class Batch:
         else:
             return self.ref == other.ref
 
+    def __gt__(self, other: object) -> bool:
+        """If False then to more priority"""
+        if self.eta is None:
+            return False
+        if (other_eta := getattr(other, "eta")) is None:
+            return True
+        return self.eta > other_eta
+
     def __hash__(self) -> int:
         return hash(self.ref)
+
+
+def allocate(line: OrderLine, batches: list[Batch]) -> NoReturn | int:
+    """
+    Allocate only first batch that can allocate for line
+    """
+    try:
+        earliest_acceptable_batch = next(
+            b for b in sorted(batches) if b.can_allocate(line)
+        )
+    except StopIteration:
+        raise OutOfStock(f"Our batches haven't so big amount of {line.stu}")
+    else:
+        earliest_acceptable_batch.allocate(line)
+        return earliest_acceptable_batch.ref
