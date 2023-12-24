@@ -1,58 +1,48 @@
-from datetime import date
+from datetime import date, timedelta
 
-from src.clean_architecture.model import OrderLine, Batch
+import pytest
 
+from src.clean_architecture.exceptions import OutOfStock
+from src.clean_architecture.model import Batch, allocate, OrderLine
 
-def make_batch_and_line(
-    stu: str, batch_qty: int, line_qty: int
-) -> tuple[Batch, OrderLine]:
-    """
-    Make a Batch and an OrderLine instances for testing
-    """
-    return (
-        Batch(batch_id=1, quantity=batch_qty, stu=stu, eta=date.today()),
-        OrderLine(order_id=1, quantity=line_qty, stu=stu),
-    )
+today = date.today()
+tomorrow = today + timedelta(days=1)
+later = today + timedelta(days=10)
 
 
-def test_batch_reduced_quantity() -> None:
-    """
-    DI-Container - Low-level module
-    """
-    batch, order_line = make_batch_and_line(
-        stu="Melon", batch_qty=5, line_qty=4
-    )
-    batch.allocate(order_line)
-
-    assert batch.quantity == 1
+def test_can_return_allocate_batch_ref() -> None:
+    batch = Batch(ref=1, purchased_quantity=12, stu="Melon", eta=today)
+    line = OrderLine(order_id=1, quantity=10, stu="Melon")
+    allocation = allocate(line, [batch])
+    assert allocation == batch.ref
 
 
-def test_suppress_repeatable_order_lines_to_single_batch() -> None:
-    """
-    DI-Container - Low-level module
-    """
-    batch, order_line = make_batch_and_line(
-        stu="Melon", batch_qty=5, line_qty=4
-    )
-    order_line2 = OrderLine(order_id=2, stu="Melon", quantity=1)
-    batch.allocate(order_line)
-    batch.allocate(order_line2)
+def test_can_allocate_earliest_batch() -> None:
+    batch1 = Batch(ref=1, purchased_quantity=12, stu="Melon", eta=today)
+    batch2 = Batch(ref=1, purchased_quantity=12, stu="Melon", eta=tomorrow)
+    batch3 = Batch(ref=1, purchased_quantity=12, stu="Melon", eta=later)
+    line = OrderLine(order_id=1, quantity=10, stu="Melon")
+    allocate(line, [batch2, batch3, batch1])
 
-    assert batch.quantity == 1
+    assert batch1.available_quantity == 2
+    assert batch2.available_quantity == 12
+    assert batch3.available_quantity == 12
 
 
-def test_ignore_negative_allocations() -> None:
-    """
-    DI-Container - Low-level module
-    """
-    batch, order_line = make_batch_and_line(
-        stu="Melon", batch_qty=5, line_qty=6
-    )
-    batch.allocate(order_line)
+def test_prefer_stock_in_batches_to_shipments() -> None:
+    stock_batch = Batch(ref=1, purchased_quantity=12, stu="M", eta=None)
+    shipping_batch = Batch(ref=1, purchased_quantity=12, stu="M", eta=tomorrow)
+    line = OrderLine(order_id=1, quantity=2, stu="M")
+    allocate(line, [shipping_batch, stock_batch])
 
-    assert batch.quantity == 5
+    assert stock_batch.available_quantity == 10
+    assert shipping_batch.available_quantity == 12
 
-    order_line2 = OrderLine(stu="Melon", order_id=2, quantity=2)
-    batch.allocate(order_line2)
 
-    assert batch.quantity == 3
+def test_no_acceptable_batches_error() -> None:
+    stock_batch = Batch(ref=1, purchased_quantity=12, stu="M", eta=None)
+    shipping_batch = Batch(ref=1, purchased_quantity=12, stu="M", eta=tomorrow)
+    line = OrderLine(order_id=1, quantity=20, stu="M")
+
+    with pytest.raises(OutOfStock, match="M"):
+        allocate(line, [shipping_batch, stock_batch])

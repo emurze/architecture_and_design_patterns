@@ -19,16 +19,13 @@
 
 ### Low-level modules 
 
-* outer layer
+* outer layer of clean architecture
 
 ### High-level modules
 
-* inner layer
+* inner layer of clean architecture
 * Abstraction
 
-### High level concepts should not depend on Low-level conepts by architecture circle
-
-* Because use cases are specificBecause use cases are specific
 
 ### Entity is *Critical Business Data* + *Critical Business Rules*
 
@@ -54,3 +51,39 @@ between the users and the Entities.
 
 * A use case is an object. It has one or more functions that implement the application-
 specific business rules
+
+  
+### Value Object is critical business domain object that is uniquely identified by all data it holds; we usually make them *immutable*: 
+
+![value_object](images/value_object.png)
+
+
+### Entity patterns is critical business domain object that is uniquely identified by id
+
+![entity](images/entity.png)
+
+
+### Anemic model is model that can have behavior, but it saves it to the another module
+
+In this example, Money is a Value Object representing a monetary amount. 
+However, the BankAccount class is anemic because it primarily holds data and 
+the behavior for deposit and withdrawal is in a separate BankService class.
+
+![anemic_model_and_value_object](images/anemic_model_and_value_object.png)
+
+### Domain Service Function
+
+Is function that haven't natural home in an Entity or Value Object.
+A thing that allows order_line and set of branches sounds like a function.
+> Sometimes, is just isn't a thing – Eric Evans, Domain-Driven Design
+
+This function doesn't contain application-specific logic. And it ofhen reused by
+Application-Service layer
+
+
+![domain_service](images/domain_service.png)
+
+
+### Custom \__gt__ for sorting
+
+![gt](images/gt.png)
