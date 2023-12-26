@@ -8,16 +8,16 @@ from src.clean_architecture.exceptions import OutOfStock
 @dataclass(frozen=True)
 class OrderLine:
     """
-    Value object is object that identified by data (order_id, stu, quantity),
+    Value object is object that identified by data (order_id, sku, quantity),
     haven't a long-lived identity (id, ref), and is immutable.
     Because if I change a property then I will get a new value object.
     Statement (frozen=True) means that the entire class will have __eq__ and
     __hash__ methods and will be immutable.
     """
 
-    order_id: int  # order_id is for another Object
-    stu: str
+    sku: str
     quantity: int
+    order_id: int  # order_id is for another Object
 
 
 @dataclass
@@ -30,7 +30,7 @@ class Batch:
     """
 
     ref: int
-    stu: str
+    sku: str
     purchased_quantity: int
     eta: date | None = None
     _allocations: set[OrderLine] = field(
@@ -58,7 +58,7 @@ class Batch:
     def can_allocate(self, line: OrderLine) -> bool:
         return (
             self.available_quantity >= line.quantity
-            and self.stu == line.stu
+            and self.sku == line.sku
             and not self._allocations
         )
 
@@ -93,7 +93,7 @@ def allocate(line: OrderLine, batches: list[Batch]) -> NoReturn | int:
             b for b in sorted(batches) if b.can_allocate(line)
         )
     except StopIteration:
-        raise OutOfStock(f"Our batches haven't so big amount of {line.stu}")
+        raise OutOfStock(f"Our batches haven't so big amount of {line.sku}")
     else:
         earliest_acceptable_batch.allocate(line)
         return earliest_acceptable_batch.ref

@@ -34,9 +34,15 @@ A driven adapter implement a driven port
 
 ### Difference
 
+#### Layered Architecture
+
 ![layered_architecture](images/layered.png)
 
+#### Hexagon Architecture
+
 ![hexagon_architecture](images/v_hexagon.png)
+
+#### Onion Architecture
 
 ![onion_architecture](images/onion.png)
 
