@@ -86,6 +86,7 @@ class Batch:
 def allocate(line: OrderLine, batches: list[Batch]) -> NoReturn | int:
     """
     Allocate only first batch that can allocate for line
+    Domain Service Function
     """
     try:
         earliest_acceptable_batch = next(
