@@ -14,7 +14,7 @@ lot of people does. A driver adapter is a software component outside
 the application that uses a driver port. The driver port is a dependency
 of the driver adapter. 
 
-Examples of driver adapters: a MVC web controller, a REST controller, 
+Examples of driver adapters: an MVC web controller, a REST controller, 
 an automated test framework, etc
 
 #### Driven
@@ -30,7 +30,7 @@ A driven adapter implement a driven port
 
 ![hexagon](images/hexagon.png)
 
-![hexagonal_archtiecture](images/hexagonal_archtiecture.png)
+![hexagonal_architecture](images/hexagonal_architecture.png)
 
 ### Difference
 
@@ -43,3 +43,18 @@ A driven adapter implement a driven port
 #### Clean Architecture is Onion Architecture with more sensible naming
 
 ![clean_architecture](images/clean.png)
+
+
+### Anemic Model
+
+#### Layered or Hexagonal Architecture
+
+![hexagon_anemic_model.png](images/hexagon_anemic_model.png)
+
+#### Onion Rich Domain Model
+
+![onion_rich_domain_model.png](images/onion_rich_domain_model.png)
+
+#### Clean Rich Domain Model
+
+![clean_rich_domain_model.png](images/clean_rich_domain_model.png)
